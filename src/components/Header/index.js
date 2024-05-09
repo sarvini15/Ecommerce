@@ -1,8 +1,18 @@
 import { Typography, Divider, Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const location = useLocation();
   const navigate = useNavigate();
+
+  let pageTitle = "Welcome to My Store";
+
+  if (location.pathname === "/cart") {
+    pageTitle = "Cart";
+  } else if (location.pathname === "/checkout") {
+    pageTitle = "Checkout";
+  } 
+
   return (
     <>
       <Typography
@@ -11,18 +21,18 @@ export default function Header() {
         sx={{
           textAlign: "center",
           marginTop: "20px",
+          marginBottm: "20px",
           fontWeight: "bold",
           fontSize: "40px",
         }}
       >
-        Welcome to My Store
+        {pageTitle}
       </Typography>
-      <Divider />
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
-          margins: "10px",
+          marginBottom: "20px",
         }}
       >
         <Button
@@ -33,13 +43,34 @@ export default function Header() {
           Home
         </Button>
         <Button
+          style={
+            {
+              // color: location.pathname === "/cart" ? "white" : "inherit",
+              // backgroundColor:
+              //   location.pathname === "/cart" ? "#238be6" : "inherit",
+            }
+          }
           onClick={() => {
             navigate("/cart");
           }}
         >
           Cart
         </Button>
+
+        <Button
+          // style={{
+          //   color: location.pathname === "/cart" ? "white" : "inherit",
+          //   backgroundColor:
+          //     location.pathname === "/cart" ? "#238be6" : "inherit",
+          // }}
+          onClick={() => {
+            navigate("/ordersPage");
+          }}
+        >
+          My Orders
+        </Button>
       </Box>
+      <Divider />
     </>
   );
 }

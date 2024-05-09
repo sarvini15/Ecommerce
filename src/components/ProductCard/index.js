@@ -1,34 +1,41 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Card, CardContent, Button } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProduct } from "../../utils/api_products";
 import { useSnackbar } from "notistack";
+import { Typography, Button, Card, CardContent, Box } from "@mui/material";
+import { deleteProduct } from "../../utils/api_products";
 import { addToCart } from "../../utils/api_cart";
+
 export default function ProductCard(props) {
   const { product } = props;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
-  const deleteProductMutation = useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: () => {
-      enqueueSnackbar("Product is Deleted", {
-        variant: "success",
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-      });
-    },
-    onError: (error) => {
-      enqueueSnackbar(error.response.data.message, {
-        variant: "error",
-      });
-    },
-  });
+
   const addToCartMutation = useMutation({
     mutationFn: addToCart,
     onSuccess: () => {
-      enqueueSnackbar("Product succesfully added to Cart", {
+      // display success message
+      enqueueSnackbar("Product has been added to cart successfully.", {
+        variant: "success",
+      });
+      // reset the cart data
+      queryClient.invalidateQueries({
+        queryKey: ["cart"],
+      });
+    },
+    onError: (error) => {
+      // display error message
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      // display success message
+      enqueueSnackbar("Product is deleted", {
         variant: "success",
       });
       queryClient.invalidateQueries({
@@ -36,14 +43,13 @@ export default function ProductCard(props) {
       });
     },
     onError: (error) => {
+      // display error message
       enqueueSnackbar(error.response.data.message, {
         variant: "error",
       });
     },
   });
-  const handleAddToCart = () => {
-    addToCartMutation.mutate(product);
-  };
+
   const handleProductDelete = (event) => {
     event.preventDefault();
     const confirm = window.confirm(
@@ -53,86 +59,68 @@ export default function ProductCard(props) {
       deleteProductMutation.mutate(product._id);
     }
   };
+
   return (
-    <>
-      <Card>
-        <CardContent>
+    <Card>
+      <CardContent>
+        <Typography fontWeight={"bold"}>{product.name}</Typography>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "10px 0",
+          }}
+        >
           <Typography
-            variant="body1"
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              fontWeight: "bold",
-            }}
+            variant="p"
+            style={{ backgroundColor: "#EBFBEE", color: "#6ACF7E" }}
           >
-            {product.name}
+            {product.price}
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              margin: "20px",
-            }}
+          <Typography
+            variant="p"
+            style={{ backgroundColor: "#FFF4E6", color: "#FD882B" }}
           >
-            <Typography
-              variant="body1"
-              style={{
-                backgroundColor: "lightgreen",
-                borderRadius: "10px",
-                paddingLeft: "20px",
-                paddingRight: "20px",
-              }}
-            >
-              {product.price}
-            </Typography>
-            <Typography
-              variant="body1"
-              style={{
-                backgroundColor: "lightyellow",
-                borderRadius: "20px",
-                paddingLeft: "20px",
-                paddingRight: "20px",
-              }}
-            >
-              {product.category}
-            </Typography>
-          </Box>
+            {product.category}
+          </Typography>
+        </Box>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            addToCartMutation.mutate(product);
+          }}
+        >
+          Add To Cart
+        </Button>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "10px 0",
+          }}
+        >
           <Button
             variant="contained"
+            style={{ borderRadius: "17px" }}
             color="primary"
-            fullWidth
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </Button>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              margin: "20px",
+            onClick={() => {
+              navigate("/products/" + product._id);
             }}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ borderRadius: "20px" }}
-              onClick={() => {
-                navigate("/products/" + product._id);
-              }}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              sx={{ borderRadius: "20px" }}
-              onClick={handleProductDelete}
-            >
-              Delete
-            </Button>
-          </Box>
-        </CardContent>
-      </Card>
-    </>
+            Edit
+          </Button>
+          <Button
+            variant="contained"
+            style={{ borderRadius: "17px" }}
+            color="error"
+            onClick={handleProductDelete}
+          >
+            Delete
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
