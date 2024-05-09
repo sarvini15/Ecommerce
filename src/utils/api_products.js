@@ -18,7 +18,7 @@ export const getProduct = async (id) => {
   // to retrieve product from the API /products/:id
   const res = await axios.get(`${url}/products/${id}`);
   return res.data;
-};
+}
 
 export const addProduct = async (data) => {
   const response = await axios.post(
