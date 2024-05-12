@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 import Header from "../../components/Header";
 import {
   Typography,
@@ -13,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { getProduct, updateProduct } from "../../utils/api_products";
+import { uploadImage } from "../../utils/api_images";
 
 export default function ProductsEdit() {
   const { id } = useParams();
@@ -22,10 +23,11 @@ export default function ProductsEdit() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
+  const [image, setImage] = useState("");
 
   // get data from product api: /products/:id
   const {
-    data: product = {},
+    data: product,
     error,
     isLoading,
   } = useQuery({
@@ -37,10 +39,12 @@ export default function ProductsEdit() {
   useEffect(() => {
     // if product is not undefined
     if (product) {
+      console.log(product);
       setName(product.name);
       setDescription(product.description);
       setPrice(product.price);
       setCategory(product.category);
+      setImage(product.image ? product.image : "");
     }
   }, [product]);
 
@@ -71,7 +75,26 @@ export default function ProductsEdit() {
       description: description,
       price: price,
       category: category,
+      image: image,
     });
+  };
+
+  // upload image mutation
+  const uploadImageMutation = useMutation({
+    mutationFn: uploadImage,
+    onSuccess: (data) => {
+      setImage(data.image_url);
+    },
+    onError: (error) => {
+      // display error message
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
+
+  const handleImageUpload = (event) => {
+    uploadImageMutation.mutate(event.target.files[0]);
   };
 
   // if API data is still loading
@@ -136,6 +159,26 @@ export default function ProductsEdit() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12}>
+              {image !== "" ? (
+                <>
+                  <div>
+                    <img
+                      src={"http://localhost:5000/" + image}
+                      width="300px"
+                      height="300px"
+                    />
+                  </div>
+                  <Button onClick={() => setImage("")}>Remove Image</Button>
+                </>
+              ) : (
+                <input
+                  type="file"
+                  multiple={false}
+                  onChange={handleImageUpload}
+                />
+              )}
             </Grid>
             <Grid item xs={12}>
               <Button variant="contained" fullWidth onClick={handleFormSubmit}>

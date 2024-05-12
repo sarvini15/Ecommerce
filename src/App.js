@@ -8,6 +8,7 @@ import ProductsEdit from "./pages/ProductsEdit";
 import Cart from "./pages/Cart";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
+import PaymentVerify from "./pages/PaymentVerify";
 
 function App() {
   const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/ordersPage" element={<OrdersPage />} />
+              <Route path="/verifyPayment" element={<PaymentVerify/>} />
             </Routes>
           </BrowserRouter>
         </SnackbarProvider>

@@ -18,7 +18,7 @@ import {
   Paper,
 } from "@mui/material";
 import Header from "../../components/Header";
-import { getCart } from "../../utils/api_cart";
+import { getCart , emptyCart  } from "../../utils/api_cart";
 import { addNewOrder } from "../../utils/api_order";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -37,16 +37,20 @@ export default function CheckoutPage() {
 
   const addNewOrderMutation = useMutation({
     mutationFn: addNewOrder,
-    onSuccess: () => {
-      // temporary redirect
-      navigate("/ordersPage");
+    onSuccess: (responseData) => {
+      // remove all the items from the cart
+      emptyCart();
+      // get the billplz url (responseData.billplz_url)
+      const billplz_url = responseData.billplz_url;
+      // redirect user to billplz payment page
+      window.location.href = billplz_url;
     },
     onError: (error) => {
       enqueueSnackbar(error.response.data.message, {
         variant: "error",
       });
     },
-  });
+  });;
 
   const calculateTotal = () => {
     let total = 0;
