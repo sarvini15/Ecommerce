@@ -2,8 +2,12 @@ import axios from "axios";
 
 const url = "http://localhost:5000";
 
-export const getOrders = async () => {
-  const res = await axios.get(`${url}/orders`);
+export const getOrders = async (token) => {
+  const res = await axios.get(`${url}/orders`, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
   return res.data;
 };
 
@@ -14,6 +18,7 @@ export const addNewOrder = async (data) => {
     {
       headers: {
         "Content-Type": "application/json", // telling the API you are sending JSON data
+        Authorization: "Bearer " + data.token,
       },
     }
   );

@@ -22,11 +22,15 @@ import { getCart , emptyCart  } from "../../utils/api_cart";
 import { addNewOrder } from "../../utils/api_order";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { role, token } = currentUser;
   const { data: cart = [] } = useQuery({
     queryKey: ["cart"],
     queryFn: getCart,
@@ -77,6 +81,7 @@ export default function CheckoutPage() {
         customerEmail: email,
         products: cart,
         totalPrice: calculateTotal(),
+        token: token
       });
     }
   };

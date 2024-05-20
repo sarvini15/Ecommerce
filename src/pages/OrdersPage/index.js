@@ -17,10 +17,14 @@ import {
 
 import Header from "../../components/Header";
 import { getOrders, deleteOrder, updateOrder } from "../../utils/api_order";
+import { useCookies } from "react-cookie";
 
 export default function OrdersPage() {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { role, token } = currentUser;
 
   const { data: orders = [] } = useQuery({
     queryKey: ["order"],
@@ -51,7 +55,10 @@ export default function OrdersPage() {
       "Are you sure you want to remove this order?"
     );
     if (answer) {
-      deleteOrderMutation.mutate(_id);
+      deleteOrderMutation.mutate({
+        _id: _id,
+        token: token,
+      });
     }
   };
 
@@ -78,6 +85,7 @@ export default function OrdersPage() {
     updateOrderMutation.mutate({
       ...order,
       status: status,
+      token: token,
     });
   };
 

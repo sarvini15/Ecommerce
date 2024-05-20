@@ -4,9 +4,13 @@ import { useSnackbar } from "notistack";
 import { Typography, Button, Card, CardContent, Box } from "@mui/material";
 import { deleteProduct } from "../../utils/api_products";
 import { addToCart } from "../../utils/api_cart";
+import { useCookies } from "react-cookie";
 
 export default function ProductCard(props) {
   const { product } = props;
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { role } = currentUser;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
@@ -62,6 +66,15 @@ export default function ProductCard(props) {
 
   return (
     <Card>
+      <img
+        src={
+          "http://localhost:5000/" +
+          (product.image && product.image !== ""
+            ? product.image
+            : "uploads/default image.jpg")
+        }
+        width="100%"
+      />
       <CardContent>
         <Typography fontWeight={"bold"}>{product.name}</Typography>
         <Box
@@ -89,37 +102,43 @@ export default function ProductCard(props) {
           variant="contained"
           color="primary"
           onClick={() => {
-            addToCartMutation.mutate(product);
+            if (currentUser && currentUser.email) {
+              addToCartMutation.mutate(product);
+            } else {
+              enqueueSnackbar("Please login first");
+            }
           }}
         >
           Add To Cart
         </Button>
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            margin: "10px 0",
-          }}
-        >
-          <Button
-            variant="contained"
-            style={{ borderRadius: "17px" }}
-            color="primary"
-            onClick={() => {
-              navigate("/products/" + product._id);
+        {role && role === "admin" ? (
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              margin: "10px 0",
             }}
           >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            style={{ borderRadius: "17px" }}
-            color="error"
-            onClick={handleProductDelete}
-          >
-            Delete
-          </Button>
-        </Box>
+            <Button
+              variant="contained"
+              style={{ borderRadius: "17px" }}
+              color="primary"
+              onClick={() => {
+                navigate("/products/" + product._id);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              style={{ borderRadius: "17px" }}
+              color="error"
+              onClick={handleProductDelete}
+            >
+              Delete
+            </Button>
+          </Box>
+        ) : null}
       </CardContent>
     </Card>
   );

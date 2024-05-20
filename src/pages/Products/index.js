@@ -16,8 +16,12 @@ import ProductCard from "../../components/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "../../utils/api_categories";
 import { getProducts } from "../../utils/api_products";
+import { useCookies } from "react-cookie";
 
 export default function Products() {
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { role } = currentUser;
   const navigate = useNavigate();
   const [category, setCategory] = useState("all");
   const [page, setPage] = useState(1);
@@ -48,20 +52,22 @@ export default function Products() {
         >
           Products
         </Typography>
-        <Button
-          variant="contained"
-          sx={{
-            marginLeft: "auto",
-            marginRight: "10px",
-            marginTop: "10px",
-            backgroundColor: "#1BA930",
-          }}
-          onClick={() => {
-            navigate("/add");
-          }}
-        >
-          Add New
-        </Button>
+        {role && role === "admin" ? (
+          <Button
+            variant="contained"
+            sx={{
+              marginLeft: "auto",
+              marginRight: "10px",
+              marginTop: "10px",
+              backgroundColor: "#1BA930",
+            }}
+            onClick={() => {
+              navigate("/add");
+            }}
+          >
+            Add New
+          </Button>
+        ) : null}
       </div>
       <FormControl
         sx={{ marginTop: "10px", width: "200px", marginLeft: "10px" }}

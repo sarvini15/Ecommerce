@@ -14,10 +14,14 @@ import {
 } from "@mui/material";
 import { getProduct, updateProduct } from "../../utils/api_products";
 import { uploadImage } from "../../utils/api_images";
+import { useCookies } from "react-cookie";
 
 export default function ProductsEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { token } = currentUser;
   const { enqueueSnackbar } = useSnackbar();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -39,7 +43,6 @@ export default function ProductsEdit() {
   useEffect(() => {
     // if product is not undefined
     if (product) {
-      console.log(product);
       setName(product.name);
       setDescription(product.description);
       setPrice(product.price);
@@ -76,6 +79,7 @@ export default function ProductsEdit() {
       price: price,
       category: category,
       image: image,
+      token: token,
     });
   };
 
@@ -165,7 +169,10 @@ export default function ProductsEdit() {
                 <>
                   <div>
                     <img
-                      src={"http://localhost:5000/" + image}
+                      src={
+                        "https://localhost5000/" +
+                        image
+                      }
                       width="300px"
                       height="300px"
                     />

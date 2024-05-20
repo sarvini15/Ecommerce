@@ -27,6 +27,7 @@ export const addProduct = async (data) => {
     {
       headers: {
         "Content-Type": "application/json", // telling the API you are sending JSON data
+        Authorization: "Bearer " + data.token, // include token in the API
       },
     }
   );
@@ -40,6 +41,7 @@ export const updateProduct = async (data) => {
       {
         headers: {
           "Content-Type": "application/json", // telling the API you are sending JSON data
+          Authorization: "Bearer " + data.token, // include token in the API
         },
       }
     );

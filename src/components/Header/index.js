@@ -1,7 +1,12 @@
 import { Typography, Divider, Box, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+
+import { emptyCart } from "../../utils/api_cart";
 
 export default function Header() {
+  const [cookies, setCookie, removeCookie] = useCookies(["currentUser"]);
+  const { currentUser } = cookies;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -11,7 +16,22 @@ export default function Header() {
     pageTitle = "Cart";
   } else if (location.pathname === "/checkout") {
     pageTitle = "Checkout";
-  } 
+  } else if (location.pathname === "/orders") {
+    pageTitle = "My Orders";
+  } else if (location.pathname === "/login") {
+    pageTitle = "Login";
+  } else if (location.pathname === "/signup") {
+    pageTitle = "Create A New Account";
+  }
+
+  const handleLogout = () => {
+    // remove the currentUser cookie
+    removeCookie("currentUser");
+    // empty the cart
+    emptyCart();
+    // redirect back to home
+    navigate("/login ");
+  };
 
   return (
     <>
@@ -31,44 +51,99 @@ export default function Header() {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           marginBottom: "20px",
         }}
       >
-        <Button
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Home
-        </Button>
-        <Button
-          style={
-            {
-              // color: location.pathname === "/cart" ? "white" : "inherit",
-              // backgroundColor:
-              //   location.pathname === "/cart" ? "#238be6" : "inherit",
-            }
-          }
-          onClick={() => {
-            navigate("/cart");
-          }}
-        >
-          Cart
-        </Button>
-
-        <Button
-          // style={{
-          //   color: location.pathname === "/cart" ? "white" : "inherit",
-          //   backgroundColor:
-          //     location.pathname === "/cart" ? "#238be6" : "inherit",
-          // }}
-          onClick={() => {
-            navigate("/ordersPage");
-          }}
-        >
-          My Orders
-        </Button>
+        <Box sx={{ display: "flex" }}>
+          <Button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Home
+          </Button>
+          <Button
+            style={{
+              color: location.pathname === "/cart" ? "white" : "#0288d1",
+              backgroundColor:
+                location.pathname === "/cart" ? "#0288d1" : "white",
+            }}
+            onClick={() => {
+              navigate("/cart");
+            }}
+          >
+            Cart
+          </Button>
+          <Button
+            style={{
+              textTransform: "capitalize",
+              color: location.pathname === "/orders" ? "white" : "#0288d1",
+              backgroundColor:
+                location.pathname === "/orders" ? "#0288d1" : "white",
+            }}
+            onClick={() => {
+              navigate("/orders");
+            }}
+          >
+            My Orders
+          </Button>
+          <Button
+            style={{
+              textTransform: "capitalize",
+              color: location.pathname === "/category" ? "white" : "#0288d1",
+              backgroundColor:
+                location.pathname === "/category" ? "#0288d1" : "white",
+            }}
+            onClick={() => {
+              navigate("/category");
+            }}
+          >
+            Categories
+          </Button>
+        </Box>
+        {currentUser ? (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <span>Current User: {currentUser.name}</span>
+            <Button
+              style={{
+                textTransform: "capitalize",
+              }}
+              onClick={handleLogout}
+            >
+              Log Out
+            </Button>
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex" }}>
+            <Button
+              style={{
+                textTransform: "capitalize",
+                color: location.pathname === "/login" ? "white" : "#0288d1",
+                backgroundColor:
+                  location.pathname === "/login" ? "#0288d1" : "white",
+              }}
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              style={{
+                textTransform: "capitalize",
+                color: location.pathname === "/signup" ? "white" : "#0288d1",
+                backgroundColor:
+                  location.pathname === "/signup" ? "#0288d1" : "white",
+              }}
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              Sign Up
+            </Button>
+          </Box>
+        )}
       </Box>
       <Divider />
     </>

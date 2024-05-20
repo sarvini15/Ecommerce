@@ -15,9 +15,9 @@ export function addToCart(item, quantity = 1) {
 export function getCart() {
   return JSON.parse(localStorage.getItem("cart")) || [];
 }
-export function removeProductFromCart(id) {
+export function removeProductFromCart(_id) {
   let existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-  existingCart = existingCart.filter((item) => item.id !== id);
+  existingCart = existingCart.filter((item) => item._id !== _id);
   localStorage.setItem("cart", JSON.stringify(existingCart));
 }
 
