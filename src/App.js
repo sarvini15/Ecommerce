@@ -11,6 +11,7 @@ import CartPage from "./pages/Cart";
 import CheckoutPage from "./pages/CheckoutPage";
 import Order from "./pages/OrdersPage";
 import PaymentVerify from "./pages/PaymentVerify";
+import CategoriesPage from "./pages/CategoriesPage";
 
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/verify-payment" element={<PaymentVerify />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/categories" element={<CategoriesPage />} />
               </Routes>
             </BrowserRouter>
           </SnackbarProvider>

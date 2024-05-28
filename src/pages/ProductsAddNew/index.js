@@ -54,7 +54,7 @@ export default function ProductsAddNew() {
       description: description,
       price: price,
       category: category,
-      token: token,
+      token: token
     });
   };
 

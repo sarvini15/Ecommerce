@@ -86,21 +86,32 @@ export default function Products() {
         >
           <MenuItem value="all">All</MenuItem>
           {categories.map((category) => {
+            // [ "cat1", "cat2", "cat3" ]
+            /*
+            [ 
+              {
+                id: '12313'
+                name: "cat1'
+              } 
+            ]
+            */
             return (
-              <MenuItem key={category} value={category}>
-                {category}
+              <MenuItem key={category._id} value={category._id}>
+                {category.name}
               </MenuItem>
             );
           })}
         </Select>
       </FormControl>
       <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid key={product._id} item xs={12} md={6} lg={4}>
-            <ProductCard product={product} />
-          </Grid>
-        ))}
-        {products.length === 0 ? (
+        {products
+          ? products.map((product) => (
+              <Grid key={product._id} item xs={12} md={6} lg={4}>
+                <ProductCard product={product} />
+              </Grid>
+            ))
+          : null}
+        {products && products.length === 0 ? (
           <Grid item xs={12}>
             <Typography align="center" sx={{ padding: "10px 0" }}>
               No items found.

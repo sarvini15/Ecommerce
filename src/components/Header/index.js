@@ -29,8 +29,8 @@ export default function Header() {
     removeCookie("currentUser");
     // empty the cart
     emptyCart();
-    // redirect back to home
-    navigate("/login ");
+    // redirect back to login
+    navigate("/login");
   };
 
   return (
@@ -88,22 +88,25 @@ export default function Header() {
           >
             My Orders
           </Button>
-          <Button
-            style={{
-              textTransform: "capitalize",
-              color: location.pathname === "/category" ? "white" : "#0288d1",
-              backgroundColor:
-                location.pathname === "/category" ? "#0288d1" : "white",
-            }}
-            onClick={() => {
-              navigate("/category");
-            }}
-          >
-            Categories
-          </Button>
+          {currentUser && currentUser.role === "admin" ? (
+            <Button
+              style={{
+                textTransform: "capitalize",
+                color:
+                  location.pathname === "/categories" ? "white" : "#0288d1",
+                backgroundColor:
+                  location.pathname === "/categories" ? "#0288d1" : "white",
+              }}
+              onClick={() => {
+                navigate("/categories");
+              }}
+            >
+              Categories
+            </Button>
+          ) : null}
         </Box>
         {currentUser ? (
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span>Current User: {currentUser.name}</span>
             <Button
               style={{

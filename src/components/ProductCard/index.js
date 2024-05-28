@@ -66,16 +66,17 @@ export default function ProductCard(props) {
 
   return (
     <Card>
-      <img
-        src={
-          "http://localhost:5000/" +
-          (product.image && product.image !== ""
-            ? product.image
-            : "uploads/default image.jpg")
-        }
-        width="100%"
-      />
       <CardContent>
+        <img
+          src={
+            "http://localhost:5000/" +
+            (product.image && product.image !== ""
+              ? product.image
+              : "uploads/default image.jpg")
+          }
+          width="100%"
+        />
+
         <Typography fontWeight={"bold"}>{product.name}</Typography>
         <Box
           style={{
@@ -94,7 +95,9 @@ export default function ProductCard(props) {
             variant="p"
             style={{ backgroundColor: "#FFF4E6", color: "#FD882B" }}
           >
-            {product.category}
+           {product.category && product.category.name
+              ? product.category.name
+              : ""}
           </Typography>
         </Box>
         <Button

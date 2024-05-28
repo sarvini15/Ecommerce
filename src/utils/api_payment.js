@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000";
+import { url } from "./data";
 
 export const verifyPayment = async (data) => {
   const res = await axios.post(`${url}/payment`, JSON.stringify(data), {
