@@ -103,7 +103,7 @@ export default function ProductCard(props) {
         <Button
           fullWidth
           variant="contained"
-          color="primary"
+          color="success"
           onClick={() => {
             if (currentUser && currentUser.email) {
               addToCartMutation.mutate(product);
